@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind screen;
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@media (max-width: 640px) {
+  .Toastify__close-button {
+    align-self: center !important;
+  }
+
+  .Toastify__close-button svg {
+    height: 2rem !important;
+    width: 2rem !important;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --tg-viewport-height: 100vh;
+    --tg-viewport-stable-height: 100vh;
+
+    --safe-area-inset-bottom: calc(
+      100vh - var(--tg-viewport-stable-height, 100vh)
+    );
+
+    --background: linear-gradient(
+      to top left,
+      /* hsla(253, 61%, 21%, 0.525),
+      hsl(276, 79%, 44%),
+      hsl(340, 100%, 54%) */
+    );
+    --foreground: 253, 61%, 21%;
+
+    --muted: 30 20% 15%;
+    --muted-foreground: 30 10% 35%;
+
+
+    --popover: 264 58% 85%;
+    --popover-foreground: 269 6.1% 1.05%;
+
+    --card: 269 41.2% 92.1%;
+    --card-foreground: 269 6.1% 1.05%;
+
+    --border: 269 11.1% 89.84%;
+    --input: 269 11.1% 89.84%;
+
+    --primary: 44 70% 55%;
+    --primary-foreground: 30 10% 5%;
+
+    --positive-1: 174 100% 32%;
+    --positive-2: 172 100% 30%;
+
+    --negative-1: 332 55% 46%;
+    --negative-2: 334 91% 49%;
+
+    --negative: 269 61% 21%;
+    --negative-foreground: 269 1.22% 92.1%;
+
+    --secondary: 269 3.05% 96.05%;
+    --secondary-foreground: 269 4.66% 12.1%;
+
+    --accent: 269 3.05% 96.05%;
+    --accent-foreground: 269 4.66% 12.1%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --ring: 269 61% 21%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: linear-gradient(130deg, hsl(276 20% 18%), hsl(239 35% 16%));
+    --foreground: 0, 0%, 93%;
+
+    --muted: 30 20% 15%;
+    --muted-foreground: 30 10% 55%;
+
+    --popover: 264 58% 10%;
+    --popover-foreground: 30 10% 97%;
+
+    --card: 30 25% 10%;
+    --card-foreground: 30 10% 97%;
+
+    --border: 30 20% 15%;
+    --input: 30 20% 15%;
+
+    --primary: 44 70% 55%;
+    --primary-foreground: 30 10% 5%;
+
+    --secondary: 30 20% 15%;
+    --secondary-foreground: 30 10% 97%;
+
+    --accent: 30 20% 15%;
+    --accent-foreground: 30 10% 97%;
+
+    --destructive: 0 63% 30%;
+    --destructive-foreground: 30 10% 97%;
+
+    --ring: 44 100% 55%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* .pb-safe-combined {
+  padding-bottom: calc(
+    var(
+      --safe-area-inset-bottom,
+      env(safe-area-inset-bottom, 8px) + var(--base-pb, 0)
+    )
+  );
+} */

@@ -1,0 +1,9 @@
+---
+profiles:
+  aptos-markets-testnet:
+    network: Testnet
+    private_key: ""
+    public_key: ""
+    account: 
+    rest_url: "https://fullnode.testnet.aptoslabs.com"
+    faucet_url: "https://faucet.testnet.aptoslabs.com"

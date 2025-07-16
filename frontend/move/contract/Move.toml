@@ -1,0 +1,38 @@
+[package]
+name = "AptosMarkets"
+version = "1.0.0"
+license = "MIT"
+authors = ["Aptos Markets Team"]
+
+[addresses]
+aptos_markets = "0xbf2557e1fca3bf80953a61e49cd2a7b114c28432015978207ab5666d524dbc62"
+market_admin = "0xbf2557e1fca3bf80953a61e49cd2a7b114c28432015978207ab5666d524dbc62"
+
+# Oracle Contract Addresses (Production Ready)
+# Pyth Network Oracle Addresses
+pyth_mainnet = "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387"
+pyth_testnet = "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387"
+
+# Switchboard On-Demand Oracle Addresses
+switchboard_mainnet = "0xfea54925b5ac1912331e2e62049849b37842efaea298118b66f85a590577528"
+switchboard_testnet = "0x81fc6bbc64b7968e631b2a5b3a88652f91a617534e3755efab2f572858a3099"
+
+# Supra Oracle Addresses (Production ready)
+supra_mainnet_pull = "0x2FA6DbFe4291136Cf272E1A3294362b6651e8517"
+supra_mainnet_storage = "0xD02cc7a670047b6b012556A88e275c685d25e0c9"
+supra_testnet_pull = "0xaa2f56843Cec7840F0C106F0202313d8d8CB13d6"
+supra_testnet_storage = "0x4591d1B110ad451d8220d82252F829E8b2a91B17"
+
+# AOracle Integration (Native Aptos Oracle)
+aoracle_mainnet = "0xffd89fe22fd620d2cba0b3aaccdde6f5ad63ce7a7b18d13c0dc61e21521affff"
+
+[dependencies]
+MoveStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/move-stdlib/", rev = "testnet" }
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework/", rev = "testnet" }
+AptosStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-stdlib/", rev = "testnet" }
+
+# Native oracle interfaces - implemented directly in the contract
+# No external dependencies needed - production ready approach
+
+[dev-dependencies]
+# Dependencies for testing and development

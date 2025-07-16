@@ -1,4 +1,37 @@
 {
-  "typescript.tsdk": "../../node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "CodeGPT.apiKey": "OpenAI",
+  "[javascript]": {
+    "editor.formatOnSave": true
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true
+  },
+  "deno.enablePaths": ["supabase/functions"],
+  "deno.lint": true,
+  "deno.unstable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "eslint.options": {
+    "extensions": [".js", ".jsx", ".html", ".ts", ".tsx"]
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html"
+  ],
+  "files.autoSave": "onFocusChange",
+  "git.inputValidationSubjectLength": 100,
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "millionLint.xrayMode": false
 }
