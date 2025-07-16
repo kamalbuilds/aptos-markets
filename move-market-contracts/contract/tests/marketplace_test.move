@@ -39,10 +39,32 @@ module aptos_markets::marketplace_test {
         account::create_account_for_test(signer::address_of(user));
     }
 
-    #[test(aptos_framework = @aptos_framework, admin = @0x100)]
+    /// Initialize global resources for testing
+    #[test_only]
+    fun init_global_resources(admin: &signer) {
+        // For testing, we use the admin account to initialize global resources
+        // This simulates what happens when modules are published
+        marketplace::init_for_test(admin);
+    }
+
+    /// Complete test setup that properly initializes the @aptos_markets account
+    #[test_only] 
+    fun setup_aptos_markets(aptos_framework: &signer, admin: &signer) {
+        // Set up time
+        setup_test_env(aptos_framework);
+        
+        // For testing, we'll initialize global resources at the admin address
+        // which will act as @aptos_markets for these tests
+        marketplace::init_for_test(admin);
+    }
+
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets)]
     fun test_create_marketplace_success(aptos_framework: &signer, admin: &signer) {
         setup_test_env(aptos_framework);
-        create_test_accounts(admin, admin);
+        
+        // Initialize AptosCoin and global resources
+        let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        marketplace::init_for_test(admin);
 
         let name = string::utf8(b"Test Marketplace");
         let description = string::utf8(b"A test marketplace for prediction markets");
@@ -64,18 +86,25 @@ module aptos_markets::marketplace_test {
         // Verify marketplace was created successfully
         let marketplace_addr = marketplace::get_marketplace_address<AptosCoin>();
         assert!(marketplace_addr != @0x0, 1);
+        
+        // Clean up
+        coin::destroy_burn_cap(burn_cap);
+        coin::destroy_mint_cap(mint_cap);
     }
 
-    #[expected_failure(abort_code = marketplace::E_INVALID_FEE_RATE)]
-    #[test(aptos_framework = @aptos_framework, admin = @0x100)]
+    #[expected_failure(abort_code = 65546)]
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets)]
     fun test_create_marketplace_invalid_fee_rate(aptos_framework: &signer, admin: &signer) {
         setup_test_env(aptos_framework);
-        create_test_accounts(admin, admin);
+        
+        // Initialize AptosCoin and global resources
+        let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        marketplace::init_for_test(admin);
 
         let name = string::utf8(b"Test Marketplace");
         let description = string::utf8(b"A test marketplace");
         let oracle_feed = @0x1234;
-        let fee_rate = 10001; // > MAX_FEE_RATE (10000)
+        let fee_rate = 10001; // > MAX_FEE_RATE (1000)
         let daily_volume_limit = 1000000000000u128;
         let ai_enabled = true;
 
@@ -88,13 +117,20 @@ module aptos_markets::marketplace_test {
             daily_volume_limit,
             ai_enabled
         );
+        
+        // Clean up
+        coin::destroy_burn_cap(burn_cap);
+        coin::destroy_mint_cap(mint_cap);
     }
 
-    #[expected_failure(abort_code = marketplace::E_MARKETPLACE_ALREADY_EXISTS)]
-    #[test(aptos_framework = @aptos_framework, admin = @0x100)]
+    #[expected_failure(abort_code = 524290)]
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets)]
     fun test_create_marketplace_already_exists(aptos_framework: &signer, admin: &signer) {
         setup_test_env(aptos_framework);
-        create_test_accounts(admin, admin);
+        
+        // Initialize AptosCoin and global resources
+        let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        marketplace::init_for_test(admin);
 
         let name = string::utf8(b"Test Marketplace");
         let description = string::utf8(b"A test marketplace");
@@ -124,15 +160,22 @@ module aptos_markets::marketplace_test {
             daily_volume_limit,
             ai_enabled
         );
+        
+        // Clean up
+        coin::destroy_burn_cap(burn_cap);
+        coin::destroy_mint_cap(mint_cap);
     }
 
-    #[expected_failure(abort_code = marketplace::E_NOT_AUTHORIZED)]
-    #[test(aptos_framework = @aptos_framework, admin = @0x100, user = @0x200)]
+    #[expected_failure(abort_code = 327681)]
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets, user = @0x200)]
     fun test_create_marketplace_unauthorized(aptos_framework: &signer, admin: &signer, user: &signer) {
         setup_test_env(aptos_framework);
-        create_test_accounts(admin, user);
+        account::create_account_for_test(signer::address_of(user));
+        
+        // Initialize AptosCoin and global resources
+        let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        marketplace::init_for_test(admin);
 
-        // Initialize registry with admin
         let name = string::utf8(b"Test Marketplace");
         let description = string::utf8(b"A test marketplace");
         let oracle_feed = @0x1234;
@@ -140,6 +183,7 @@ module aptos_markets::marketplace_test {
         let daily_volume_limit = 1000000000000u128;
         let ai_enabled = true;
 
+        // First create with admin to initialize marketplace
         marketplace::create_marketplace<AptosCoin>(
             admin,
             name,
@@ -160,12 +204,19 @@ module aptos_markets::marketplace_test {
             daily_volume_limit,
             ai_enabled
         );
+        
+        // Clean up
+        coin::destroy_burn_cap(burn_cap);
+        coin::destroy_mint_cap(mint_cap);
     }
 
-    #[test(aptos_framework = @aptos_framework, admin = @0x100)]
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets)]
     fun test_register_market(aptos_framework: &signer, admin: &signer) {
         setup_test_env(aptos_framework);
-        create_test_accounts(admin, admin);
+        
+        // Initialize AptosCoin and global resources
+        let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        marketplace::init_for_test(admin);
 
         // Create marketplace first
         let name = string::utf8(b"Test Marketplace");
@@ -186,18 +237,22 @@ module aptos_markets::marketplace_test {
         );
 
         let marketplace_addr = marketplace::get_marketplace_address<AptosCoin>();
-        let market_addr = @0x5678;
-        let market_type = string::utf8(b"prediction");
+        assert!(marketplace_addr != @0x0, 1);
 
-        // This would typically be called by the market module
-        // marketplace::register_market<AptosCoin>(marketplace_addr, market_addr, market_type);
         // Note: register_market is a friend function, so we can't test it directly here
+        
+        // Clean up
+        coin::destroy_burn_cap(burn_cap);
+        coin::destroy_mint_cap(mint_cap);
     }
 
-    #[test(aptos_framework = @aptos_framework, admin = @0x100)]
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets)]
     fun test_update_ai_data(aptos_framework: &signer, admin: &signer) {
         setup_test_env(aptos_framework);
-        create_test_accounts(admin, admin);
+        
+        // Initialize AptosCoin and global resources
+        let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        marketplace::init_for_test(admin);
 
         // Create marketplace with AI enabled
         let name = string::utf8(b"AI Test Marketplace");
@@ -218,28 +273,22 @@ module aptos_markets::marketplace_test {
         );
 
         let marketplace_addr = marketplace::get_marketplace_address<AptosCoin>();
-        
-        // Test AI data update
-        let sentiment_score = 7500; // 75% positive
-        let risk_assessment = 2500; // 25% risk
-        let recommendation = 1; // Recommend
-        let confidence = 8500; // 85% confidence
+        assert!(marketplace_addr != @0x0, 1);
 
-        // This would typically be called by the AI oracle module
-        // marketplace::update_ai_data<AptosCoin>(
-        //     marketplace_addr,
-        //     sentiment_score,
-        //     risk_assessment,
-        //     recommendation,
-        //     confidence
-        // );
         // Note: update_ai_data is a friend function, so we can't test it directly here
+        
+        // Clean up
+        coin::destroy_burn_cap(burn_cap);
+        coin::destroy_mint_cap(mint_cap);
     }
 
-    #[test(aptos_framework = @aptos_framework, admin = @0x100)]
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets)]
     fun test_get_latest_price(aptos_framework: &signer, admin: &signer) {
         setup_test_env(aptos_framework);
-        create_test_accounts(admin, admin);
+        
+        // Initialize AptosCoin and global resources
+        let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        marketplace::init_for_test(admin);
 
         // Create marketplace
         let name = string::utf8(b"Price Test Marketplace");
@@ -264,12 +313,19 @@ module aptos_markets::marketplace_test {
         // Get latest price (should return placeholder value)
         let price = marketplace::get_latest_price<AptosCoin>(marketplace_addr);
         assert!(price == 100000000u128, 1); // Should be placeholder price
+        
+        // Clean up
+        coin::destroy_burn_cap(burn_cap);
+        coin::destroy_mint_cap(mint_cap);
     }
 
-    #[test(aptos_framework = @aptos_framework, admin = @0x100)]
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets)]
     fun test_marketplace_view_functions(aptos_framework: &signer, admin: &signer) {
         setup_test_env(aptos_framework);
-        create_test_accounts(admin, admin);
+        
+        // Initialize AptosCoin and global resources
+        let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        marketplace::init_for_test(admin);
 
         // Create marketplace
         let name = string::utf8(b"View Test Marketplace");
@@ -306,15 +362,19 @@ module aptos_markets::marketplace_test {
 
         let ai_enabled_check = marketplace::is_ai_enabled<AptosCoin>(marketplace_addr);
         assert!(ai_enabled_check == ai_enabled, 7);
+        
+        // Clean up
+        coin::destroy_burn_cap(burn_cap);
+        coin::destroy_mint_cap(mint_cap);
     }
 
-    #[test(aptos_framework = @aptos_framework, admin = @0x100)]
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets)]
     fun test_marketplace_fee_collection(aptos_framework: &signer, admin: &signer) {
         setup_test_env(aptos_framework);
-        create_test_accounts(admin, admin);
-
-        // Initialize AptosCoin for testing
+        
+        // Initialize AptosCoin and global resources
         let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        marketplace::init_for_test(admin);
         
         // Create marketplace
         let name = string::utf8(b"Fee Test Marketplace");

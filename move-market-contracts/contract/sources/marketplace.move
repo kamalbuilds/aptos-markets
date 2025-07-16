@@ -172,6 +172,19 @@ module aptos_markets::marketplace {
         move_to(account, registry);
     }
 
+    /// Test-only function to initialize registry for testing
+    #[test_only]
+    public fun init_for_test(account: &signer) {
+        if (!exists<MarketplaceRegistry>(signer::address_of(account))) {
+            let registry = MarketplaceRegistry {
+                marketplaces: table::new(),
+                total_marketplaces: 0,
+                admin: signer::address_of(account),
+            };
+            move_to(account, registry);
+        };
+    }
+
     /// Create a new marketplace with enhanced features
     public entry fun create_marketplace<CoinType>(
         admin: &signer,

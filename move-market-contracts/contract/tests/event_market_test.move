@@ -40,6 +40,9 @@ module aptos_markets::event_market_test {
 
     #[test_only]
     fun init_marketplace(admin: &signer): address {
+        // Legacy wrapper - just initialize global resources
+        marketplace::init_for_test(admin);
+        
         let name = string::utf8(b"Test Marketplace");
         let description = string::utf8(b"Test marketplace for event markets");
         let oracle_feed = @0x1234;
@@ -61,6 +64,33 @@ module aptos_markets::event_market_test {
     }
 
     #[test_only]
+    fun init_marketplace_with_aptos_coin(aptos_framework: &signer, admin: &signer): (address, coin::BurnCapability<AptosCoin>, coin::MintCapability<AptosCoin>) {
+        // Initialize AptosCoin AND global resources
+        let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        marketplace::init_for_test(admin);
+        
+        let name = string::utf8(b"Test Marketplace");
+        let description = string::utf8(b"Test marketplace for event markets");
+        let oracle_feed = @0x1234;
+        let fee_rate = 250;
+        let daily_volume_limit = 1000000000000u128;
+        let ai_enabled = true;
+
+        marketplace::create_marketplace<AptosCoin>(
+            admin,
+            name,
+            description,
+            oracle_feed,
+            fee_rate,
+            daily_volume_limit,
+            ai_enabled
+        );
+
+        let marketplace_addr = marketplace::get_marketplace_address<AptosCoin>();
+        (marketplace_addr, burn_cap, mint_cap)
+    }
+
+    #[test_only]
     fun init_coins_for_users(aptos_framework: &signer, user1: &signer, user2: &signer) {
         let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
         
@@ -74,7 +104,7 @@ module aptos_markets::event_market_test {
         coin::destroy_mint_cap(mint_cap);
     }
 
-    #[test(aptos_framework = @aptos_framework, admin = @0x100, user1 = @0x200)]
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets, user1 = @0x200)]
     fun test_create_event_market_success(
         aptos_framework: &signer, 
         admin: &signer, 
@@ -82,8 +112,11 @@ module aptos_markets::event_market_test {
     ) {
         setup_test_env(aptos_framework);
         create_test_accounts(admin, user1, user1);
-        let marketplace_addr = init_marketplace(admin);
-        init_coins_for_users(aptos_framework, user1, user1);
+        let (marketplace_addr, burn_cap, mint_cap) = init_marketplace_with_aptos_coin(aptos_framework, admin);
+        
+        // Mint coins for users using the already-initialized capabilities
+        let coins1 = coin::mint<AptosCoin>(1000000000, &mint_cap); // 10 APT
+        aptos_account::deposit_coins(signer::address_of(user1), coins1);
 
         let title = string::utf8(b"Who will win the election?");
         let description = string::utf8(b"Multi-outcome prediction market for election results");
@@ -126,6 +159,10 @@ module aptos_markets::event_market_test {
         assert!(vector::length(&outcome_prices) == 3, 5);
         assert!(total_vol == 0, 6); // No bets yet
         assert!(is_resolved == false, 7);
+        
+        // Clean up
+        coin::destroy_burn_cap(burn_cap);
+        coin::destroy_mint_cap(mint_cap);
     }
 
     #[expected_failure(abort_code = event_market::E_EVENT_NOT_STARTED)]

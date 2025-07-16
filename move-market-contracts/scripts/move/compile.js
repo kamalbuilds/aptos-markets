@@ -27,7 +27,7 @@ async function compile() {
     packageDirectoryPath: "move/contract",
     namedAddresses: {
       owner: accountAddress,
-      aptosmarkets: accountAddress,
+      aptos_markets: accountAddress,
       market_admin: accountAddress,
     },
     extraArguments: [],

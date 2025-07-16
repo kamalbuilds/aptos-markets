@@ -1,4 +1,5 @@
 contract/build
+contract/cache
+contract/target
 
-contract/.trace
-
+contract/trace

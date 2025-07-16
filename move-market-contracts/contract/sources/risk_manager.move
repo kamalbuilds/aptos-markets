@@ -259,6 +259,22 @@ module aptos_markets::risk_manager {
         move_to(admin, registry);
     }
 
+    /// Test-only function to initialize risk registry for testing
+    #[test_only]
+    public fun init_for_test(admin: &signer) {
+        if (!exists<RiskRegistry>(signer::address_of(admin))) {
+            let registry = RiskRegistry {
+                admin: signer::address_of(admin),
+                global_risk_limit: 1000000000000, // 10M APT equivalent
+                total_exposure: 0,
+                active_alerts: 0,
+                circuit_breaker_active: false,
+                last_update: timestamp::now_seconds(),
+            };
+            move_to(admin, registry);
+        };
+    }
+
     /// Create or update user risk profile
     public entry fun initialize_user_risk_profile<CoinType>(user: &signer) {
         let user_addr = signer::address_of(user);

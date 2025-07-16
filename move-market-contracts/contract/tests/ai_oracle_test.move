@@ -97,7 +97,7 @@ module aptos_markets::ai_oracle_test {
         coin::destroy_mint_cap(mint_cap);
     }
 
-    #[test(aptos_framework = @aptos_framework, admin = @0x100, oracle = @0x200, user = @0x300)]
+    #[test(aptos_framework = @aptos_framework, admin = @aptos_markets, oracle = @0x200, user = @0x300)]
     fun test_initialize_ai_oracle(
         aptos_framework: &signer,
         admin: &signer,
@@ -106,7 +106,14 @@ module aptos_markets::ai_oracle_test {
     ) {
         setup_test_env(aptos_framework);
         create_test_accounts(admin, oracle, user);
-        init_coins_for_users(aptos_framework, user);
+        
+        // Initialize AptosCoin and global resources
+        let (burn_cap, mint_cap) = aptos_coin::initialize_for_test(aptos_framework);
+        ai_oracle::init_for_test(admin);
+        
+        // Mint coins for user
+        let coins = coin::mint<AptosCoin>(1000000000, &mint_cap); // 10 APT
+        aptos_account::deposit_coins(signer::address_of(user), coins);
 
         // Register an oracle (init_module is called automatically on first use)
         let source_types = vector::empty<String>();
@@ -131,6 +138,10 @@ module aptos_markets::ai_oracle_test {
         assert!(reputation == 5000, 2); // Default neutral reputation
         assert!(uptime == 10000, 3); // Default 100% uptime
         assert!(trust_level == 1, 4); // Basic trust level
+        
+        // Clean up
+        coin::destroy_burn_cap(burn_cap);
+        coin::destroy_mint_cap(mint_cap);
     }
 
     #[expected_failure(abort_code = ai_oracle::E_NOT_AUTHORIZED)]

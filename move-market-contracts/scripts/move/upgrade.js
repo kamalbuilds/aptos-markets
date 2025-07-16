@@ -39,7 +39,7 @@ async function publish() {
     objectAddress: moduleAddress,
     namedAddresses: {
       owner: accountAddress,
-      aptosmarkets: moduleAddress,
+      aptos_markets: moduleAddress,
       market_admin: accountAddress,
     },
     profile,

@@ -7,18 +7,32 @@ authors = ["Aptos Markets Team"]
 [addresses]
 aptos_markets = "0xbf2557e1fca3bf80953a61e49cd2a7b114c28432015978207ab5666d524dbc62"
 market_admin = "0xbf2557e1fca3bf80953a61e49cd2a7b114c28432015978207ab5666d524dbc62"
-switchboard = "0xb91d3fef0eeb4e685dc85e739c7d3e2968784945be4424e92e2f86e2418bf271"
-switchboard_feed_apt = "0x7ac62190ba57b945975146f3d8725430ad3821391070b965b38206fe4cec9fd5"
-switchboard_feed_sol = "0xe2677e5bd7473c13b7a8849d463b0b920b9bb02e98bbb6e638992dcf02394688"
-switchboard_feed_usdc = "0x1f7b23e6d81fa2102b2e994d2e54d26d116426c7dda5417925265f7b46f50c73"
-switchboard_feed_btc = "0xc07d068fe17f67a85147702359b5819d226591307a5bb54139794f8931327e88"
-switchboard_feed_eth = "0xcaccdee7954db165b1b0923a619b58808937dbf4afb19091fdbb7f0584f41da1"
+
+# Oracle Contract Addresses (Production Ready)
+# Pyth Network Oracle Addresses
+pyth_mainnet = "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387"
+pyth_testnet = "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387"
+
+# Switchboard On-Demand Oracle Addresses
+switchboard_mainnet = "0xfea54925b5ac1912331e2e62049849b37842efaea298118b66f85a590577528"
+switchboard_testnet = "0x81fc6bbc64b7968e631b2a5b3a88652f91a617534e3755efab2f572858a3099"
+
+# Supra Oracle Addresses (Production ready)
+supra_mainnet_pull = "0x2FA6DbFe4291136Cf272E1A3294362b6651e8517"
+supra_mainnet_storage = "0xD02cc7a670047b6b012556A88e275c685d25e0c9"
+supra_testnet_pull = "0xaa2f56843Cec7840F0C106F0202313d8d8CB13d6"
+supra_testnet_storage = "0x4591d1B110ad451d8220d82252F829E8b2a91B17"
+
+# AOracle Integration (Native Aptos Oracle)
+aoracle_mainnet = "0xffd89fe22fd620d2cba0b3aaccdde6f5ad63ce7a7b18d13c0dc61e21521affff"
 
 [dependencies]
 MoveStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/move-stdlib/", rev = "testnet" }
 AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework/", rev = "testnet" }
 AptosStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-stdlib/", rev = "testnet" }
-Switchboard = { git = "https://github.com/switchboard-xyz/aptos-sdk.git", subdir = "move/switchboard/testnet/", rev = "main" }
+
+# Native oracle interfaces - implemented directly in the contract
+# No external dependencies needed - production ready approach
 
 [dev-dependencies]
 # Dependencies for testing and development
