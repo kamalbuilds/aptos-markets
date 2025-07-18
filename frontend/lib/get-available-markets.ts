@@ -20,7 +20,7 @@ export const getAvailableMarkets = async <
 
   for (const marketplace of marketplaces) {
     await surfClientMarketplace.view
-      .available_markets({
+      .get_active_markets({
         typeArguments: [`${marketplace.typeArgument}`],
         functionArguments: [marketplace.address],
       })
