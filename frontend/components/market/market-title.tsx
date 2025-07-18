@@ -8,6 +8,7 @@ export interface MarketTitleProps {
     one: string;
     two: string;
   };
+  marketName?: string; // Optional market title
   resolveTime: number;
   betCloseTime: number;
   titleLinkHref?: string;
@@ -19,6 +20,7 @@ export interface MarketTitleProps {
 
 export const MarketTitle = ({
   tradingPair,
+  marketName,
   resolveTime,
   betCloseTime,
   as: Tag = "h2",
@@ -72,7 +74,7 @@ export const MarketTitle = ({
             className="dark:text-secondary bg-primary px-1 rounded mx-1 hover:underline"
             href={titleLinkHref ?? ""}
           >
-            {tradingPair.one}/{tradingPair.two}
+            {marketName || `${tradingPair.one}/${tradingPair.two}`}
           </Link>
           {showTime && (
             <div className="hidden sm:flex items-center">

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 
 import { Progress } from "../ui/progress";
-import { Banana, Lock, PartyPopper } from "lucide-react";
+import { Calendar, Lock, PartyPopper } from "lucide-react";
 import { Button } from "../ui/button";
 import { formatTime } from "@/lib/utils";
 
@@ -15,8 +15,8 @@ interface MarketCardTimelineProps {
   slim?: boolean;
 }
 
-// Wrap Banana component with React.memo to prevent unnecessary re-renders
-const MemoizedBanana = React.memo(Banana);
+// Wrap Calendar component with React.memo to prevent unnecessary re-renders
+const MemoizedCalendar = React.memo(Calendar);
 
 export const MarketCardTimeline: React.FC<MarketCardTimelineProps> = ({
   createTime,
@@ -118,7 +118,7 @@ export const MarketCardTimeline: React.FC<MarketCardTimelineProps> = ({
             size="icon"
             className="bg-primary text-primary-foreground h-8 w-8 -mr-1"
           >
-            <MemoizedBanana className="h-4 w-4" />
+            <MemoizedCalendar className="h-4 w-4" />
           </Button>
         </div>
 

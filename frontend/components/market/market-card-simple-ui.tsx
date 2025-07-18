@@ -31,6 +31,7 @@ import { PricePercentageChange } from "./price-percentage-change";
 export interface MarketCardSimpleUiProps {
   tradingPairOne: MarketType; // Destructured property
   tradingPairTwo: string; // Destructured property
+  marketName: string; // Market title/name
   minBet: number;
   betCloseTime: number;
   resolveTime: number;
@@ -53,6 +54,7 @@ export interface MarketCardSimpleUiProps {
 export const MarketCardSimpleUi: React.FC<MarketCardSimpleUiProps> = ({
   tradingPairOne,
   tradingPairTwo,
+  marketName,
   minBet,
   betCloseTime,
   resolveTime,
@@ -96,6 +98,7 @@ export const MarketCardSimpleUi: React.FC<MarketCardSimpleUiProps> = ({
     () => (
       <MarketTitle
         tradingPair={{ one: tradingPairOne, two: tradingPairTwo }} // Updated to use destructured props
+        marketName={marketName}
         resolveTime={resolveTime}
         betCloseTime={betCloseTime}
         titleLinkHref={`/markets/${address}`}
@@ -103,7 +106,7 @@ export const MarketCardSimpleUi: React.FC<MarketCardSimpleUiProps> = ({
         showTime={false}
       />
     ),
-    [tradingPairOne, tradingPairTwo, resolveTime, betCloseTime]
+    [tradingPairOne, tradingPairTwo, marketName, resolveTime, betCloseTime]
   );
 
   const MemoizedPricePercentageChange = useMemo(

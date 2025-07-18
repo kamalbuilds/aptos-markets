@@ -10,36 +10,26 @@ export const initializeMarket = async (
   const market = await getMarketRessource(availableMarket);
 
   const creator = market.creator as Address;
-  const createdAt = Number(market.created_at_timestamp);
-  const startPrice = Number(market.start_price.vec[0]);
+  const createdAt = Number(market.created_at);
   const startTime = Number(market.start_time);
   const endTime = Number(market.end_time);
-  const minBet = Number(market.min_bet);
-  const upBetsSum = Number(market.up_bets_sum);
-  const downBetsSum = Number(market.down_bets_sum);
-  const fee = Number(market.fee.numerator) / Number(market.fee.denominator);
-  const resolvedAt = market.resolved_at.vec[0]
-    ? Number(market.resolved_at.vec[0])
-    : null;
-  const endPrice = market.end_price.vec[0]
-    ? Number(market.end_price.vec[0])
-    : null;
+  const minBet = 1000000; // Default min bet (0.01 APT)
+  const upBetsSum = Number(market.total_yes_bets);
+  const downBetsSum = Number(market.total_no_bets);
+  const fee = Number(market.market_fee_rate) / 10000; // Convert from basis points
+  const resolvedAt = market.resolved ? Number(market.resolution_time) : null;
+  const endPrice = null; // Not available in current structure
+  const startPrice = Number(market.current_yes_price) / 100; // Convert from basis points to percentage
 
-  const upBets = new Map<Address, number>(
-    market.up_bets.data.map((bet) => [bet.key as Address, Number(bet.value)])
-  );
-  const downBets = new Map<Address, number>(
-    market.down_bets.data.map((bet) => [bet.key as Address, Number(bet.value)])
-  );
+  // Initialize empty maps since betting data is not available in current structure
+  const upBets = new Map<Address, number>();
+  const downBets = new Map<Address, number>();
+  const userVotes = new Map<Address, boolean>();
 
-  const userVotes = new Map<Address, boolean>(
-    market.user_votes.data.map((vote) => [vote.key as Address, vote.value])
-  );
+  const upVotesSum = 0; // Not available in current structure
+  const downVotesSum = 0; // Not available in current structure
 
-  const upVotesSum = Number(market.up_votes_sum);
-  const downVotesSum = Number(market.down_votes_sum);
-
-  const name = `${
+  const name = market.title || `${
     availableMarket.type
   }/USD by ${DateTime.fromSeconds(endTime).toLocaleString()}`;
 

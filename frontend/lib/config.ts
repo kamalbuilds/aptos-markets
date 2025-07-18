@@ -2,7 +2,7 @@
 export const APTOS_CONFIG = {
   // Network Configuration
   network: "testnet" as const,
-  nodeUrl: "https://fullnode.testnet.aptoslabs.com",
+  nodeUrl: "https://api.testnet.aptoslabs.com/v1",
   faucetUrl: "https://faucet.testnet.aptoslabs.com",
   
   // Deployed Contract Addresses (Production - Testnet)

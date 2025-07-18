@@ -140,6 +140,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({
       resolveTime: marketData?.endTime ?? 1337,
       tradingPairOne: tradingPair.one,
       tradingPairTwo: tradingPair.two,
+      marketName: marketData?.name ?? `${tradingPair.one}/${tradingPair.two} Prediction`,
       upVotesSum: marketData?.upVotesSum ?? 1337,
       downVotesSum: marketData?.downVotesSum ?? 1337,
       upWinFactor: marketData?.upWinFactor ?? 0.5,

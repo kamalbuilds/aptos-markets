@@ -1,6 +1,6 @@
 "use client";
 
-import { Banana, Lock, PartyPopper } from "lucide-react";
+import { Lock, PartyPopper } from "lucide-react";
 import {
   Modal,
   ModalTrigger,
@@ -146,10 +146,23 @@ export function MarketCreateModal({
     console.log(MODULE_ADDRESS_FROM_ABI);
     const startTime = DateTime.fromJSDate(data.startTime);
     const endTime = startTime.plus({ seconds: data.durationSeconds });
+    console.log("Available marketplaces:", marketplaces);
+    console.log("Selected asset:", data.asset);
+    
+    const selectedMarketplace = marketplaces.find((x) => x.typeArgument === data.asset);
+    console.log("Selected marketplace:", selectedMarketplace);
+    
+    if (!selectedMarketplace) {
+      toast.error(`No marketplace found for asset ${data.asset}`);
+      return;
+    }
+
     const res = await createMarket(account, signAndSubmitTransaction, {
       type: data.asset as `${string}::${string}::${string}`,
-      marketplace: marketplaces.find((x) => x.typeArgument === data.asset)!
-        .address,
+      marketplace: selectedMarketplace.address,
+      title: `${data.asset.split("::").pop()}/USD Price Prediction`,
+      description: `Prediction market for ${data.asset.split("::").pop()} price movement`,
+      category: "crypto",
       startTimeTimestampSeconds: Math.floor(startTime.toSeconds()),
       endTimeTimestampSeconds: Math.floor(endTime.toSeconds()),
       minBet: aptToOctas(data.minBet),
@@ -259,6 +272,54 @@ export function MarketCreateModal({
                       </div>
                       {/* <FormDescription>
                                                 Bet on the change of this asset pair.
+                                            </FormDescription> */}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem className={`flex flex-col`}>
+                      <FormLabel>Title</FormLabel>
+                      <div className="max-w-full overflow-auto">
+                        <Input type="text" {...field} />
+                      </div>
+                      {/* <FormDescription>
+                                                No bets can be placed for the given duration.
+                                            </FormDescription> */}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className={`flex flex-col`}>
+                      <FormLabel>Description</FormLabel>
+                      <div className="max-w-full overflow-auto">
+                        <Input type="text" {...field} />
+                      </div>
+                      {/* <FormDescription>
+                                                No bets can be placed for the given duration.
+                                            </FormDescription> */}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem className={`flex flex-col`}>
+                      <FormLabel>Category</FormLabel>
+                      <div className="max-w-full overflow-auto">
+                        <Input type="text" {...field} />
+                      </div>
+                      {/* <FormDescription>
+                                                No bets can be placed for the given duration.
                                             </FormDescription> */}
                       <FormMessage />
                     </FormItem>

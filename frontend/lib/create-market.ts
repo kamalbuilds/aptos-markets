@@ -2,24 +2,23 @@ import { aptos } from "@/lib/aptos";
 import { CommittedTransactionResponse } from "@aptos-labs/ts-sdk";
 import { createEntryPayload } from "@thalalabs/surf";
 import { ABI as MarketAbi } from "@/lib/market-abi";
-import {
-  AccountInfo,
-  InputTransactionData,
-} from "@aptos-labs/wallet-adapter-react";
 import { Address } from "./types/market";
 
 export interface CreateMarketPayload {
   type: `${string}::${string}::${string}`;
   marketplace: Address;
+  title: string;
+  description: string;
+  category: string;
   startTimeTimestampSeconds: number;
   endTimeTimestampSeconds: number;
   minBet: number;
 }
 
 export const createMarket = async (
-  account: AccountInfo,
+  account: { address: string } | null,
   signAndSubmitTransaction: (
-    transaction: InputTransactionData
+    transaction: any
   ) => Promise<{ hash: string }>,
   payload: CreateMarketPayload
 ): Promise<CommittedTransactionResponse> => {
@@ -29,30 +28,38 @@ export const createMarket = async (
   const {
     type,
     marketplace,
+    title,
+    description,
+    category,
     startTimeTimestampSeconds,
     endTimeTimestampSeconds,
     minBet,
   } = payload;
+
+  console.log("Creating market with payload:", payload);
 
   const contractPayload = createEntryPayload(MarketAbi, {
     function: "create_market",
     typeArguments: [type],
     functionArguments: [
       marketplace,
+      title,
+      description,
+      category,
       startTimeTimestampSeconds,
       endTimeTimestampSeconds,
       minBet,
-      2,
-      100,
     ],
   });
+
+  console.log("Contract payload:", contractPayload);
 
   const transactionResponse = await signAndSubmitTransaction({
     sender: account.address,
     data: contractPayload,
   });
 
-  console.log("🍧", transactionResponse);
+  console.log("Transaction response:", transactionResponse);
 
   return await aptos.waitForTransaction({
     transactionHash: transactionResponse.hash,

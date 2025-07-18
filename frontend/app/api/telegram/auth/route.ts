@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validate, parse, InitData } from "@telegram-apps/init-data-node";
 import { storeTelegramUser } from "@/lib/supabase/store-telegram-user";
-import { User } from "grammy/types";
 
 async function authorizeRequest(
   req: NextRequest
@@ -20,7 +19,7 @@ async function authorizeRequest(
   const initData = parse(authData);
 
   if (initData.user) {
-    const user: User = {
+    const user = {
       id: initData.user.id,
       first_name: initData.user.firstName,
       last_name: initData.user.lastName,
