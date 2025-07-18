@@ -1,5 +1,5 @@
 <div align="center" style="background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);">
-  <img src="./public/pp-preview-purple.jpg" alt="Aptos Markets Preview" style="margin-bottom: -7px" />
+  <img src="./frontend/public/aptos-markets.jpg" alt="Aptos Markets Preview" style="margin-bottom: -7px" />
 </div>
 
 ## Aptos Markets
@@ -83,7 +83,6 @@ Aptos Markets leverages a cutting-edge technology stack designed for scalability
 
 ### Frontend & Design
 - Next.js 14: App Router with server components and streaming
-- React 18: Latest React features with concurrent rendering
 - TypeScript: Full type safety across the entire codebase
 - Tailwind CSS: Utility-first styling with custom design system
 - Framer Motion: Smooth animations and interactions
@@ -157,10 +156,180 @@ Robust server infrastructure ensuring platform reliability:
 - Notification System: Real-time alerts and updates
 - Data Synchronization: Blockchain and database state management
 
-### Architecture Diagram
-<div align="center">
-  <img src="./public/pp-architecture.png" alt="Aptos Markets Architecture" style="margin-bottom: -7px" />
-</div>
+### Architecture Overview
+
+The Aptos Markets platform consists of multiple interconnected layers, each designed for specific functionality. Below are the architectural diagrams broken down by system components:
+
+#### 1. System Overview
+High-level view of the entire platform architecture:
+
+```mermaid
+graph TB
+    subgraph "User Layer"
+        WEB["Web Application<br/>(Desktop/Mobile)"]
+        TELEGRAM["Telegram Bot<br/>(Mini App)"]
+    end
+    
+    subgraph "Frontend Layer"
+        NEXTJS["Next.js Frontend<br/>(React/TypeScript)"]
+        AI_SERVICES["AI Services<br/>(Intelligence & Analytics)"]
+    end
+    
+    subgraph "Backend Layer"
+        SERVER["Bun Server<br/>(Market Resolution)"]
+        BOT_SERVER["Telegram Bot Server<br/>(Notifications)"]
+        DATABASE["Supabase<br/>(PostgreSQL + Real-time)"]
+    end
+    
+    subgraph "Blockchain Layer"
+        APTOS["Aptos Blockchain"]
+        CONTRACTS["Move Smart Contracts<br/>(5 Modules)"]
+        ORACLES["Switchboard Oracles<br/>(Price Feeds)"]
+    end
+    
+    WEB --> NEXTJS
+    TELEGRAM --> NEXTJS
+    NEXTJS --> AI_SERVICES
+    NEXTJS --> SERVER
+    NEXTJS --> CONTRACTS
+    SERVER --> DATABASE
+    BOT_SERVER --> DATABASE
+    BOT_SERVER --> TELEGRAM
+    CONTRACTS --> APTOS
+    ORACLES --> CONTRACTS
+```
+
+#### 2. Frontend Architecture
+Detailed view of the Next.js frontend structure:
+
+```mermaid
+graph TB
+    subgraph "Application Layer"
+        APP["App Router<br/>(/app)"]
+        DASHBOARD["Dashboard Pages<br/>(Analytics & AI)"]
+        MARKETS["Market Pages<br/>(Trading Interface)"]
+        PROFILE["Profile Pages<br/>(User Management)"]
+    end
+    
+    subgraph "Component Layer"
+        MARKET_COMP["Market Components<br/>(Cards, Filters, Search)"]
+        EVENT_COMP["Event Components<br/>(Event Markets)"]
+        AI_COMP["AI Components<br/>(Dashboard, Sentiment)"]
+        UI_COMP["UI Components<br/>(Common Elements)"]
+    end
+    
+    subgraph "Service Layer"
+        WALLET["Wallet Provider<br/>(Aptos Integration)"]
+        AI_SERVICE["AI Service<br/>(ML & Analytics)"]
+        DATA_STORE["Data Stores<br/>(State Management)"]
+    end
+    
+    subgraph "Integration Layer"
+        API["API Routes<br/>(/api)"]
+        TELEGRAM_INT["Telegram Integration"]
+        SUPABASE_INT["Supabase Client"]
+        NODIT["Nodit API Client"]
+    end
+    
+    APP --> DASHBOARD
+    APP --> MARKETS  
+    APP --> PROFILE
+    DASHBOARD --> AI_COMP
+    MARKETS --> MARKET_COMP
+    MARKETS --> EVENT_COMP
+    PROFILE --> UI_COMP
+    MARKET_COMP --> DATA_STORE
+    AI_COMP --> AI_SERVICE
+    UI_COMP --> WALLET
+    API --> TELEGRAM_INT
+    API --> SUPABASE_INT
+    API --> NODIT
+```
+
+#### 3. Smart Contract Architecture
+Move contracts and their relationships on Aptos blockchain:
+
+```mermaid
+graph TB
+    subgraph "Core Contracts"
+        MARKETPLACE["marketplace.move<br/>(Market Registry & Management)"]
+        MARKET["market.move<br/>(Betting Logic & Payouts)"]
+        EVENT_MARKET["event_market.move<br/>(Real-world Events)"]
+    end
+    
+    subgraph "Supporting Modules"
+        AI_ORACLE["ai_oracle.move<br/>(AI Data Integration)"]
+        RISK_MANAGER["risk_manager.move<br/>(Risk Assessment)"]
+    end
+    
+    subgraph "External Oracles"
+        SWITCHBOARD["Switchboard Oracles<br/>(BTC, ETH, APT, SOL, USDC)"]
+    end
+    
+    subgraph "User Interactions"
+        USERS["Users<br/>(via Wallet)"]
+    end
+    
+    USERS --> MARKETPLACE
+    USERS --> MARKET
+    USERS --> EVENT_MARKET
+    
+    MARKETPLACE --> MARKET
+    MARKETPLACE --> EVENT_MARKET
+    
+    MARKET --> AI_ORACLE
+    EVENT_MARKET --> AI_ORACLE
+    
+    RISK_MANAGER --> MARKET
+    RISK_MANAGER --> EVENT_MARKET
+    
+    SWITCHBOARD --> MARKET
+    SWITCHBOARD --> EVENT_MARKET
+    SWITCHBOARD --> AI_ORACLE
+```
+
+#### 4. Data Flow Architecture
+How data flows through the system from sources to presentation:
+
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        BLOCKCHAIN["Aptos Blockchain<br/>(On-chain Data)"]
+        ORACLES["Price Oracles<br/>(Market Data)"]
+        AI_DATA["AI Services<br/>(Sentiment & Analytics)"]
+        USER_DATA["User Input<br/>(Transactions & Preferences)"]
+    end
+    
+    subgraph "Data Processing"
+        NODIT["Nodit API<br/>(Blockchain Indexing)"]
+        AI_PIPELINE["AI Pipeline<br/>(Data Analysis)"]
+        SERVER["Backend Server<br/>(Business Logic)"]
+    end
+    
+    subgraph "Data Storage"
+        SUPABASE["Supabase<br/>(PostgreSQL)"]
+        CACHE["Frontend Cache<br/>(State Stores)"]
+    end
+    
+    subgraph "Data Presentation"
+        DASHBOARD["AI Dashboard<br/>(Analytics UI)"]
+        MARKETS["Market Interface<br/>(Trading UI)"]
+        TELEGRAM["Telegram Bot<br/>(Notifications)"]
+    end
+    
+    BLOCKCHAIN --> NODIT
+    ORACLES --> AI_PIPELINE
+    AI_DATA --> AI_PIPELINE
+    USER_DATA --> SERVER
+    
+    NODIT --> CACHE
+    AI_PIPELINE --> SUPABASE
+    SERVER --> SUPABASE
+    
+    SUPABASE --> DASHBOARD
+    CACHE --> MARKETS
+    SUPABASE --> TELEGRAM
+```
 
 ## Installation and Setup
 
@@ -308,25 +477,25 @@ Aptos Markets aims to be the leading AI-powered prediction market platform, sett
 - ✅ AI-powered dashboard and insights
 - ✅ Risk assessment and fraud detection
 
-### Phase 2 - Advanced AI Features (Q1 2025)
+### Phase 2 - Advanced AI Features (Q2 2025)
 - Machine Learning Models: Advanced predictive algorithms
 - Natural Language Processing: Enhanced chat assistant
 - Computer Vision: Chart and pattern recognition
 - Automated Trading: AI-powered market making strategies
 
-### Phase 3 - Mainnet Launch & Scaling (Q2 2025)
+### Phase 3 - Mainnet Launch & Scaling (Q3 2025)
 - Mainnet Deployment: Full production launch on Aptos
 - Security Audits: Comprehensive smart contract auditing
 - Performance Optimization: Sub-second response times
 - Mobile Apps: Native iOS and Android applications
 
-### Phase 4 - Ecosystem Expansion (Q3 2025)
+### Phase 4 - Ecosystem Expansion (Q4 2025)
 - Multi-Chain Support: Cross-chain prediction markets
 - DeFi Integrations: Yield farming and liquidity mining
 - Partnership Program: Integration with major DeFi protocols
 - Developer SDK: Tools for third-party developers
 
-### Phase 5 - Global Adoption (Q4 2025)
+### Phase 5 - Global Adoption (Q5 2025)
 - Institutional Features: Enterprise-grade trading tools
 - Regulatory Compliance: Legal framework adaptation
 - International Expansion: Multi-language support
@@ -343,17 +512,6 @@ Our team's combined expertise in blockchain technology, artificial intelligence,
 ## Contributing
 
 We welcome contributions from the community! Please read our contributing guidelines and join our developer community.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-- Documentation: [docs.aptosmarkets.com](https://docs.aptosmarkets.com)
-- Discord: [Join our community](https://discord.gg/aptosmarkets)
-- Twitter: [@AptosMarkets](https://twitter.com/aptosmarkets)
-- Email: team@aptosmarkets.com
 
 ---
 
