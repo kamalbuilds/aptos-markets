@@ -17,25 +17,29 @@ export const getAvailableMarketplaces = async (marketplaceType: 'switchboard_ass
 > => {
   const logger = getLogger();
 
-  const marketplaces = await surfClientMarketplace.view
-    .available_marketplaces({
-      typeArguments: [],
-      functionArguments: [marketplaceType === 'switchboard_asset' ? MODULE_ADDRESS_FROM_ABI : '0x59e9982aaa5194058e51c8be75519ec54c518ea3651b3a4a87c39b9bd88ba314'], // TODO: only use Marketplace_abi address
-    })
-    .catch((error) => {
-      logger.error(error);
-      return [];
-    });
-
-  const availableMarketplaces =
-    (marketplaces as AvailableMarketplacesResponse[])?.[0]?.data.map(
-      (marketplace) => ({
-        address: marketplace.key,
-        typeArgument:
-          marketplace.value as `${string}::${string}::${MarketType}`,
+  try {
+    // Get the marketplace address for AptosCoin
+    const marketplaceAddress = await surfClientMarketplace.view
+      .get_marketplace_address({
+        typeArguments: ["0x1::aptos_coin::AptosCoin"],
+        functionArguments: [],
       })
-    ) ?? [];
+      .catch((error) => {
+        logger.error("Error getting marketplace address:", error);
+        return null;
+      });
 
-  
-  return availableMarketplaces.filter(marketplace => marketplace.typeArgument.split('::')[1] === marketplaceType);
+    if (marketplaceAddress && marketplaceAddress[0]) {
+      // Return our known marketplace
+      return [{
+        address: marketplaceAddress[0] as Address,
+        typeArgument: "0x1::aptos_coin::AptosCoin" as `${string}::${string}::${MarketType}`,
+      }];
+    }
+  } catch (error) {
+    logger.error("Error in getAvailableMarketplaces:", error);
+  }
+
+  // Fallback: return empty array if marketplace not found
+  return [];
 };

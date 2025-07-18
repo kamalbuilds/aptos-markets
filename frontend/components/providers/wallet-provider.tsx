@@ -17,9 +17,7 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
       dappConfig={{
         network:
           (process.env.NEXT_PUBLIC_APP_NETWORK as Network) ?? Network.TESTNET,
-        aptosApiKey: process.env.NEXT_PUBLIC_APTOS_API_KEY,
         aptosConnect: {
-          dappId: "6a12f6e7-bfdc-4401-b019-a0bea0260cf3",
           dappName: "Aptos Markets Predictions",
           dappImageURI: "https://aptos-markets.vercel.app/aptos_markets_logo.png",
         },
