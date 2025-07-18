@@ -137,7 +137,7 @@ async function createMarket(
 
 // if market address not present, we revalidate 0x0 address instead
 async function revalidateMarket(marketAddress: string = '0x0') {
-  const url = `https://app.aptos-markets-predictions.xyz/api/market/revalidate/${marketAddress}`; 
+  const url = `https://aptos-markets.vercel.app/api/market/revalidate/${marketAddress}`; 
 
   try {
     const response = await fetch(url, {

@@ -66,7 +66,7 @@ export const MarketCardExtendedUi: React.FC<MarketCardSimpleUiProps> = ({
   const [bet, setBet] = useState<"up" | "down" | null>(null);
   const [amount, setAmount] = useState<number>(octasToApt(minBet));
   const getSocialMessage = (marketId: string) =>
-    `📈 Think you can predict the next move in crypto?\nJoin our latest AI-powered market and put your forecast to the test!\n\nhttps://app.aptos-markets-predictions.xyz/markets/${marketId}\n\nOnly on 🏛️ Aptos Markets!`;
+    `📈 Think you can predict the next move in crypto?\nJoin our latest AI-powered market and put your forecast to the test!\n\nhttps://aptos-markets.vercel.app/markets/${marketId}\n\nOnly on 🏛️ Aptos Markets!`;
 
   const shareElements = useMemo(
     () => [

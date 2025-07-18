@@ -21,7 +21,7 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
         aptosConnect: {
           dappId: "6a12f6e7-bfdc-4401-b019-a0bea0260cf3",
           dappName: "Aptos Markets Predictions",
-          dappImageURI: "https://app.aptos-markets-predictions.xyz/aptos_markets_logo.png",
+          dappImageURI: "https://aptos-markets.vercel.app/aptos_markets_logo.png",
         },
         mizuwallet: {
           manifestURL:

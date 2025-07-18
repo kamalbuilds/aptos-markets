@@ -51,7 +51,7 @@ export const EventMarketCardSimpleUi: React.FC<
   >(undefined);
   const [amount, setAmount] = useState<number>(octasToApt(minBet));
   const getSocialMessage = (marketId: string) =>
-    `📊 Participate in the latest prediction market: "${question}"!\n\nJoin the challenge: https://app.aptos-markets-predictions.xyz/eventmarkets/${marketId}`;
+    `📊 Participate in the latest prediction market: "${question}"!\n\nJoin the challenge: https://aptos-markets.vercel.app/eventmarkets/${marketId}`;
 
   const handleVoteUp = useCallback(() => onVote(true), [onVote]);
   const handleVoteDown = useCallback(() => onVote(false), [onVote]);

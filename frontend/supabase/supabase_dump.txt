@@ -102,7 +102,7 @@ BEGIN
     -- Make the HTTP request using the correct http_post signature
     SELECT content INTO response
     FROM http_post(
-        'https://app.aptos-markets-predictions.xyz/api/telegram/notify',  -- Your API endpoint
+        'https://aptos-markets.vercel.app/api/telegram/notify',  -- Your API endpoint
         json_build_object(  -- Build the JSON body as a string
             'market_address', market_address,
             'telegram_user_id', telegram_user_id,
